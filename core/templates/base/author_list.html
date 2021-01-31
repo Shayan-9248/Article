@@ -1,0 +1,80 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %} {{ author.username }} {% endblock %}
+
+
+{% block content %}
+
+<header class="masthead" style="background-image: url('{% static 'blog/img/home-bg.jpg' %}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Django Blog</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+    <center><h3 style="text-align: center;width: 30% !important;" class="alert alert-primary">Author: {{ author.username|capfirst }}</h3></center>
+    <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            {% for article in articles %}
+            <div class="post-preview">
+              <a href="{{ article.get_absolute_url }}">
+                <h2 class="post-title">
+                  {{ article.title }}
+                </h2>
+                <h3 class="post-subtitle">
+                  {{ article.description|truncatewords:27 }}
+                </h3>
+              </a>
+              <p class="post-meta">
+                {{ article.publish }}</p><br>
+                <p class="post-meta">
+                  written by: {{ article.author.username }}</p>
+            </div>
+            <hr>
+            {% endfor %}
+            <hr>
+            <!-- Pager -->
+            <div class="clearfix">
+              <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <nav aria-label="...">
+          <ul class="pagination">
+            {% if articles.has_previous %}
+            <div class="page-item">
+              <a class="page-link" href="?page={{ articles.previous_page_number }}">previous</a>
+            </div>
+        {% endif %}
+        {% if articles.has_previous %}
+            <div class="page-item">
+              <a class="page-link" href="?page={{ articles.previous_page_number }}">{{ articles.previous_page_number }}</a>
+            </div>
+        {% endif %}
+            <li class="page-item"><a class="page-link" href="?page={{ articles.number }}">{{ articles.number }}</a></li>
+            {% if articles.has_next %}
+                <div class="page-item">
+                  <a class="page-link" href="?page={{ articles.next_page_number }}">{{ articles.next_page_number }}</a>
+                </div>
+            {% endif %}
+            {% if articles.has_next %}
+                <div class="page-item">
+                  <a class="page-link" href="?page={{ articles.next_page_number }}">next</a>
+                </div>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+{% endblock %}

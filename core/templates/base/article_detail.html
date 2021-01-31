@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+
+{% block title %} Article Detail {% endblock %}
+
+{% block content %}
+<header class="masthead" style="background-image: url('{{ article.image.url }}')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="site-heading">
+          <h1>{{ article.title }}</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          {{ article.description|linebreaks }}
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <hr>
+{% endblock %}
