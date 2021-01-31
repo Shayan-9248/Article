@@ -24,12 +24,14 @@
             <div class="col-6">
                 {{ form.publish|as_crispy_field }}
             </div>
+            {% if request.user.is_superuser %}
             <div class="col-6">
                 {{ form.author|as_crispy_field }}
             </div>
             <div class="col-6">
                 {{ form.status|as_crispy_field }}
             </div>
+            {% endif %}
             <div class="col-12">
                 {{ form.image|as_crispy_field }}
             </div>

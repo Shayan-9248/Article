@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, DeleteView
 from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .mixins import FieldsMixin, FormValidMixin
 from my_blog import settings
 from django.views import View
 from django.contrib import messages
@@ -78,12 +79,11 @@ class Home(LoginRequiredMixin, ListView):
             return Article.objects.filter(author=self.request.user)
 
 
-class ArticleCreate(LoginRequiredMixin, CreateView):
+class ArticleCreate(LoginRequiredMixin, FieldsMixin, FormValidMixin, CreateView):
     login_url = 'account:login'
     success_url = reverse_lazy('account:account')
     model = Article
     template_name = 'account/article-create-update.html'
-    fields = ('author', 'title', 'slug', 'description', 'category', 'status', 'publish', 'image')
 
 
 class DeleteArticle(LoginRequiredMixin, DeleteView):
