@@ -21,9 +21,6 @@ class ArticeAdmin(admin.ModelAdmin):
     ordering = ('publish',)
     actions = (make_published, make_draft)
 
-    def category_to_str(self, obj):
-        return ', '.join([category.title for category in obj.category.all()])
-
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('title', 'sub_category', 'is_sub')

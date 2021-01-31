@@ -45,6 +45,9 @@ class Article(models.Model):
     def image_tag(self):
         return format_html('<img src="{}" width=99>'.format(self.image.url))
 
+    def category_to_str(self):
+        return ', '.join([category.title for category in self.category.all()])
+
 
 def slug_blog_save(sender, instance, *args, **kwargs):
     if not instance.slug:

@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
+from django.views.generic import ListView, CreateView, DeleteView
 from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from my_blog import settings
 from django.views import View
 from django.contrib import messages
 from settings.models import Setting
+from django.urls import reverse_lazy
+from core.models import *
 from .models import *
 from .forms import *
 import requests
@@ -62,8 +65,28 @@ class Logout(LoginRequiredMixin, View):
         return redirect('/')
 
 
-class Account(View):
+class Home(LoginRequiredMixin, ListView):
     template_name = 'account/account.html'
+    login_url = 'account:login'
 
-    def get(self, request):
-        return render(request, self.template_name)
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Article.objects.all()
+        elif self.request.user.is_admin:
+            return Article.objects.filter(status='Published')
+        else:
+            return Article.objects.filter(author=self.request.user)
+
+
+class ArticleCreate(LoginRequiredMixin, CreateView):
+    login_url = 'account:login'
+    success_url = reverse_lazy('account:account')
+    model = Article
+    template_name = 'account/article-create-update.html'
+    fields = ('author', 'title', 'slug', 'description', 'category', 'status', 'publish', 'image')
+
+
+class DeleteArticle(LoginRequiredMixin, DeleteView):
+    login_url = 'account:login'
+    model = Article
+    success_url = reverse_lazy('account:account')

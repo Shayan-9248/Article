@@ -43,9 +43,10 @@ INSTALLED_APPS = [
     # Local App
     'account.apps.AccountConfig',
     'core.apps.CoreConfig',
-    'settings.apps.SettingsConfig'
+    'settings.apps.SettingsConfig',
 
     # Third Party App
+    'crispy_forms',
 ]
 
 AUTH_USER_MODEL = 'account.User'
@@ -151,3 +152,6 @@ AWS_S3_FILE_OVERWRITE = False
 # Recaptcha
 RECAPTCHA_SITE_KEY = '6LetzkMaAAAAAOBAJz6M81IP572viJeNoS3yXCT-'
 RECAPTCHA_PRIVATE_KEY = '6LetzkMaAAAAAMqZJh0WY-4RHaCcgbObeO8BFQsO'
+
+# Crispy
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
