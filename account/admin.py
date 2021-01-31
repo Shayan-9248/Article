@@ -7,13 +7,14 @@ from .models import *
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
-    list_display = ('email', 'username', 'is_admin', 'is_superuser')
-    list_filter = ('is_active', 'is_admin', 'is_superuser')
+    list_display = ('email', 'username', 'is_active', 'is_admin', 'is_superuser', 'is_author', 'is_special_user')
+    list_filter = ('is_active', 'is_author')
     fieldsets = (
         ('user', {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('is_active',)}),
+        ('Special Fields', {'fields': ('is_author', 'special_user',)}),
         ('Permissions', {'fields': ('is_admin',)}),
-        ('User_Permissions', {'fields': ('is_superuser',)})
+        ('Super User', {'fields': ('is_superuser',)})
     )
     add_fieldsets = (
         (None, {'fields': ('email', 'username', 'password1', 'password2')}),
