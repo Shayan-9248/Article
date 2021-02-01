@@ -54,3 +54,5 @@ def slug_blog_save(sender, instance, *args, **kwargs):
         instance.slug = unique_slug_generator(instance)
 
 pre_save.connect(slug_blog_save, sender=Article)
+
+

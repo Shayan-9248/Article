@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     # Third Party App
     'crispy_forms',
+    'django_celery_beat',
 ]
 
 AUTH_USER_MODEL = 'account.User'
@@ -155,3 +156,11 @@ RECAPTCHA_PRIVATE_KEY = '6LetzkMaAAAAAMqZJh0WY-4RHaCcgbObeO8BFQsO'
 
 # Crispy
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Email Backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOTS_USER = 'shayan.aimoradii@gmail.com'
+EMAIL_HOST_PASSWORD = 'rjwytbnudwgsrmxz'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

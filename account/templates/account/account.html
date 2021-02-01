@@ -38,7 +38,12 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ article.author.username|capfirst }}</td>
-                <td>{{ article.title }}</td>
+                <td>{% if article.status == 'Draft' or user.is_superuser %}
+                  <a href="{% url 'account:update' article.pk %}">{{ article.title }}</a>
+                  {% else %}
+                  {{ article.title }}
+                  {% endif %}
+                </td>
                 <td>{{ article.description|truncatewords:7 }}</td>
                 <td>{{ article.publish }}</td>
                 <td>{{ article.created }}</td>
@@ -57,8 +62,12 @@
                 
                 <td>{{ article.category_to_str }}</td>
                 <td><img src="{{ article.image.url }}" style="width: 99px;"></td>
-                <td><a href="{% url 'account:delete' article.slug article.id %}">Delete</a></td>
+                {% if request.user.is_superuser %}
+                 <td><a class="badge text-danger" href="{% url 'account:delete' article.pk %}">Delete</a></td>
+                {% endif %}
               </tr>
+              {% empty %}
+              <h4 class="alert alert-primary" style="width: 40% !important;">No Articles yet..</h4>
             {% endfor %}
           </tbody></table>
         </div>

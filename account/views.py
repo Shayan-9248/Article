@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView, DeleteView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .mixins import FieldsMixin, FormValidMixin
-from my_blog import settings
-from django.views import View
+from django.urls import reverse_lazy
 from django.contrib import messages
 from settings.models import Setting
-from django.urls import reverse_lazy
+from django.views import View
+from my_blog import settings
 from core.models import *
+from .mixins import *
 from .models import *
 from .forms import *
 import requests
@@ -86,7 +86,15 @@ class ArticleCreate(LoginRequiredMixin, FieldsMixin, FormValidMixin, CreateView)
     template_name = 'account/article-create-update.html'
 
 
-class DeleteArticle(LoginRequiredMixin, DeleteView):
+class ArticleUpdate(AuthorAccessMixin, FieldsMixin, FormValidMixin, UpdateView):
     login_url = 'account:login'
+    success_url = reverse_lazy('account:account')
+    model = Article
+    template_name = 'account/article-create-update.html'
+
+
+class DeleteArticle(LoginRequiredMixin, SuperUserMixin,  DeleteView):
+    login_url = 'account:login'
+    template_name = 'account/article_delete.html'
     model = Article
     success_url = reverse_lazy('account:account')

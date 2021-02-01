@@ -1,0 +1,12 @@
+{% extends 'account/base.html' %}
+
+{% block title-meta %} Article Delete {% endblock %}
+
+{% block title %} Article Delete {% endblock %}
+
+{% block main %}
+<form method="post">{% csrf_token %}
+    <p>Are you sure you want to delete "{{ object }}" of "{{ object.author.username }}"?</p>
+    <input type="submit" value="Confirm" class="btn btn-outline-danger">
+</form>
+{% endblock %}

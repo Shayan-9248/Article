@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.views.generic import ListView
 from account.models import User
 from django.views import View
+from .tasks import *
 from .models import *
 
 
@@ -19,6 +20,7 @@ class ArticleList(View):
             category = get_object_or_404(Category, slug=slug)
             page_obj = articles.filter(category=category)
         return render(request, self.template_name, {'articles': page_obj, 'categories': categories})
+
 
 
 class ArticleDetail(View):
