@@ -30,6 +30,7 @@
               <th>Created</th>
               <th>Updated</th>
               <th>Status</th>
+              <th>Speical</th>
               <th>Category</th>
               <th>Image</th>
               <th>Delete</th>
@@ -38,7 +39,7 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ article.author.username|capfirst }}</td>
-                <td>{% if article.status == 'Draft' or user.is_superuser %}
+                <td>{% if article.status in 'rd'|make_list or user.is_superuser %}
                   <a href="{% url 'account:update' article.pk %}">{{ article.title }}</a>
                   {% else %}
                   {{ article.title }}
@@ -48,18 +49,23 @@
                 <td>{{ article.publish }}</td>
                 <td>{{ article.created }}</td>
                 <td>{{ article.updated }}</td>
-                {% if article.status == 'Published' %}
                 <td>
+                {% if article.status == 'p' %}
                     <span class="badge badge-success">Published</span><br>
                 <a href="{% url 'core:detail' article.slug article.id %}" target="_blank">Show Article</a>
-                </td>
+                {% elif article.status == 'i' %}
+                  <span class="badge badge-primary">Pending</span><br>
+                  {% if request.user.is_superuser %}
+                  <a href="{% url 'core:preview' article.pk %}" target="_blank">Preview</a>
+                  {% endif %}
+                {% elif article.status == 'd' %}
+                    <span class="badge badge-danger">Draft</span><br>
                 {% else %}
-                <td>
-                <span class="badge badge-danger">Draft</span><br>
-                <a href="{% url 'core:detail' article.slug article.id %}" target="_blank">Show Article</a>
-                </td>
+                <span class="badge badge-warning">Returned</span><br>
+                <a href="{% url 'core:preview' article.pk %}" target="_blank">Preview</a>
                 {% endif %}
-                
+                </td>
+                <td>{{ article.is_special }}</td>
                 <td>{{ article.category_to_str }}</td>
                 <td><img src="{{ article.image.url }}" style="width: 99px;"></td>
                 {% if request.user.is_superuser %}

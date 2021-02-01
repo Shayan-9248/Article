@@ -21,16 +21,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-          {% if article.is_special %}
-            {% if request.user.is_authenticated and request.user.special_user or user == article.author or user.is_superuser %}
-              {{ article.description|linebreaks }}
-            {% else %}
-              <p style="text-align: center;">this post is special, you cant see this article<br>
-              you must be a special_user</p>
-            {% endif %}  
-          {% else %}
-            {{ article.description|linebreaks }}
-          {% endif %}
+          {{ article.description|linebreaks }}
         </div>
       </div>
     </div>

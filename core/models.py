@@ -22,8 +22,10 @@ class Category(models.Model):
 
 class Article(models.Model):
     STATUC_CHOICES = (
-        ('Draft', 'draft'),
-        ('Published', 'published')
+        ('d', 'draft'),
+        ('p', 'published'),
+        ('i', 'pending'),
+        ('r', 'returned'),
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='articles')
     title = models.CharField(max_length=177)
@@ -33,6 +35,7 @@ class Article(models.Model):
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    is_special = models.BooleanField(default=False)
     status = models.CharField(max_length=177, choices=STATUC_CHOICES)
     category = models.ManyToManyField(Category, blank=True)
 
@@ -47,6 +50,10 @@ class Article(models.Model):
 
     def category_to_str(self):
         return ', '.join([category.title for category in self.category.all()])
+
+    def is_special_article(self):
+        is_special_article.boolean = True
+        return True
 
 
 def slug_blog_save(sender, instance, *args, **kwargs):

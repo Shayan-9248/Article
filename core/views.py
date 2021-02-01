@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import Paginator
+from django.views.generic import DetailView
 from django.views.generic import ListView
+from django.core.paginator import Paginator
 from account.models import User
 from django.views import View
+from account.mixins import *
 from .tasks import *
 from .models import *
 
@@ -11,7 +13,7 @@ class ArticleList(View):
     template_name = 'base/home.html'
 
     def get(self, request, slug=None):
-        articles = Article.objects.filter(status='Published').order_by('-publish')
+        articles = Article.objects.filter(status='p').order_by('-publish')
         paginator = Paginator(articles, 3)
         page_num = request.GET.get('page')
         page_obj = paginator.get_page(page_num)
@@ -29,6 +31,14 @@ class ArticleDetail(View):
     def get(self, request, slug, id):
         article = get_object_or_404(Article, slug=slug, id=id)
         return render(request, self.template_name, {'article': article})
+
+
+class ArticlePreview(AuthorAccessMixin, DetailView):
+    template_name = 'base/article_preview.html'
+
+    def get_object(self):
+        pk = self.kwargs['pk']
+        return get_object_or_404(Article, pk=pk)
 
 
 class AuthorList(View):

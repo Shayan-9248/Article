@@ -6,9 +6,9 @@ from core.models import Article
 class FieldsMixin():
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_superuser:
-            self.fields = ('author', 'title', 'slug', 'description', 'category', 'status', 'publish', 'image')
+            self.fields = ('author', 'title', 'slug', 'description', 'category', 'is_special', 'status', 'publish', 'image')
         elif request.user.is_author:
-            self.fields = ('title', 'slug', 'description', 'category', 'publish', 'image')
+            self.fields = ('title', 'slug', 'description', 'category', 'is_special', 'publish', 'image')
         else:
             raise Http404('You cant access this page')
         return super().dispatch(request, *args, **kwargs)
@@ -17,7 +17,7 @@ class FieldsMixin():
 class AuthorAccessMixin():
     def dispatch(self, request, pk, *args, **kwargs):
         article = get_object_or_404(Article, pk=pk)
-        if article.author == request.user and article.status == 'Draft' or request.user.is_superuser:
+        if article.author == request.user and article.status in ['r', 'd'] or request.user.is_superuser:
             return super().dispatch(request, *args, **kwargs)
         else:
             raise Http404('You cant access this page')
@@ -30,7 +30,7 @@ class FormValidMixin():
         else:
             self.obj = form.save(commit=False)
             self.obj.author = self.request.user
-            self.obj.status = 'Draft'
+            self.obj.status = 'd'
         return super().form_valid(form)
 
 

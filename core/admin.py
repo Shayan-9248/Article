@@ -13,7 +13,7 @@ make_published.short_description = "Mark selected stories as draft"
 
 
 class ArticeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'publish', 'created', 'updated', 'status', 'category_to_str', 'image_tag')
+    list_display = ('title', 'author', 'publish', 'created', 'updated', 'is_special', 'status', 'category_to_str', 'image_tag')
     list_filter = ('status',)
     list_editable = ('status',)
     search_fields = ('title', 'description')
