@@ -49,9 +49,12 @@ INSTALLED_APPS = [
     # Third Party App
     'crispy_forms',
     'django_celery_beat',
+    'django_gravatar',
+    'comment',
 ]
 
 AUTH_USER_MODEL = 'account.User'
+LOGIN_URL = 'accounts/login'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

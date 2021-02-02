@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load comment_tags %} 
 
 {% block title %} Article Detail {% endblock %}
 
@@ -35,6 +36,9 @@
         {% else %}
         {{ article.description|linebreaks }}
         {% endif %}
+        
+        {% render_comments article request %}
+        {% include_bootstrap %}
       </div>
     </div>
   </div>

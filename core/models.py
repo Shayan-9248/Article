@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.db.models.signals import pre_save
 from .utils import unique_slug_generator
 from django.utils.html import format_html
+from django.contrib.contenttypes.fields import GenericRelation
+from comment.models import Comment
 from django.urls import reverse
 from account.models import *
 
@@ -38,6 +40,7 @@ class Article(models.Model):
     is_special = models.BooleanField(default=False)
     status = models.CharField(max_length=177, choices=STATUC_CHOICES)
     category = models.ManyToManyField(Category, blank=True)
+    comments = GenericRelation(Comment)
 
     def __str__(self):
         return self.title
@@ -61,5 +64,6 @@ def slug_blog_save(sender, instance, *args, **kwargs):
         instance.slug = unique_slug_generator(instance)
 
 pre_save.connect(slug_blog_save, sender=Article)
+
 
 
