@@ -10,31 +10,35 @@
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="site-heading">
           <h1>{{ article.title }}</h1>
+          {% if article.is_special %}
+          <span class="badge badge-danger" style="font-size: 14px;">Special*</span>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 </header>
 
-  <!-- Post Content -->
-  <article>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-          {% if article.is_special %}
-            {% if request.user.is_authenticated and request.user.special_user or user == article.author or user.is_superuser %}
-              {{ article.description|linebreaks }}
-            {% else %}
-              <p style="text-align: center;">this post is special, you cant see this article<br>
-              you must be a special_user</p>
-            {% endif %}  
-          {% else %}
-            {{ article.description|linebreaks }}
-          {% endif %}
-        </div>
+<!-- Post Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% if article.is_special %}
+        {% if user.is_authenticated and user.is_special_user or user == article.author or user.is_superuser %}
+        {{ article.description|linebreaks }}
+        {% else %}
+        {{ article.description|truncatewords:27 }}
+        <p class="alert alert-warning" style="text-align: center;">this post is special, you cant see this article<br>
+          you must be a <a href="#" class="alert-link">special_user</a></p>
+        {% endif %}
+        {% else %}
+        {{ article.description|linebreaks }}
+        {% endif %}
       </div>
     </div>
-  </article>
+  </div>
+</article>
 
-  <hr>
+<hr>
 {% endblock %}

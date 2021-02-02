@@ -1,7 +1,8 @@
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.forms import UserCreationForm
+from datetime import timezone
 from django import forms
 from .models import *
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from datetime import timezone
 
 
 message = {
@@ -74,3 +75,59 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'is_author', 'special_user')
+
+
+# class SignupForm(forms.Form):
+    # username = forms.CharField(error_messages=message, widget=forms.TextInput(attrs={
+    #     'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Username'
+    # }))
+    # email = forms.EmailField(error_messages=message, widget=forms.TextInput(attrs={
+    #     'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Email'
+    # }))
+    # password1 = forms.CharField(error_messages={'required': 'this field is required'}, widget=forms.PasswordInput(attrs={
+    #     'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Password'
+    # }))
+    # password2 = forms.CharField(error_messages={'required': 'this field is required'}, widget=forms.PasswordInput(attrs={
+    #     'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Confirm Password'
+    # }))
+
+class SignupForm(UserCreationForm):
+    username = forms.CharField(error_messages=message, widget=forms.TextInput(attrs={
+        'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Username'
+    }))
+    email = forms.EmailField(error_messages=message, widget=forms.TextInput(attrs={
+        'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Email'
+    }))
+    password1 = forms.CharField(error_messages={'required': 'this field is required'}, widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Password'
+    }))
+    password2 = forms.CharField(error_messages={'required': 'this field is required'}, widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Confirm Password'
+    }))
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        qs = User.objects.filter(email=email)
+        if qs.exists():
+            raise forms.ValidationError('This Email is already exists')
+        return email
+
+    def clean_password2(self):
+        password1 = self.cleaned_data['password1']
+        password2 = self.cleaned_data['password2']
+        if password1 != password2:
+            raise forms.ValidationError('Passwords must be match!')
+        return password2
+
+    class Meta:
+        model = User
+        fields = ('username', 'email')
+
+    # def clean_username(self):
+    #     username = self.cleaned_data['username']
+    #     qs = User.objects.filter(username=username)
+    #     if qs.exists():
+    #         raise forms.ValidationError('This Username is already exists')
+    #     return username
+
+    

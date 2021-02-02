@@ -25,79 +25,83 @@
 </form>
 {% endcomment %}
 
-  <center>
-    {% for category in categories %}
-<div class="btn-group">
-  <a href="{{ category.get_absolute_url }}" class="btn btn-primary">{{ category.title }}</a>
-  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  
-  <div class="dropdown-menu">
-    {% for sub in category.s_category.all %}
-    <a class="dropdown-item" href="{{ sub.get_absolute_url }}">{{ sub.title }}</a>
-    {% endfor %}
+<center>
+  {% for category in categories %}
+  <div class="btn-group">
+    <a href="{{ category.get_absolute_url }}" class="btn btn-primary">{{ category.title }}</a>
+    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+
+    <div class="dropdown-menu">
+      {% for sub in category.s_category.all %}
+      <a class="dropdown-item" href="{{ sub.get_absolute_url }}">{{ sub.title }}</a>
+      {% endfor %}
+    </div>
+
   </div>
-  
-</div>
-{% endfor %}
+  {% endfor %}
 </center>
 
-  <!-- Main Content -->
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">
-        {% for article in articles %}
-        <div class="post-preview">
-          <a href="{{ article.get_absolute_url }}">
-            <h2 class="post-title">
-              {{ article.title }}
-            </h2>
-            <h3 class="post-subtitle">
-              {{ article.description|truncatewords:27 }}
-            </h3>
-          </a>
-          <p class="post-meta">
-            {{ article.publish }}</p><br>
-            <p class="post-meta">
-              written by: <a href="{% url 'core:author' article.author.username %}">{{ article.author.username }}</a></p>
-        </div>
-        <hr>
-        {% endfor %}
-        <hr>
-        <!-- Pager -->
-        <div class="clearfix">
-          <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
-        </div>
+<!-- Main Content -->
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto">
+      {% for article in articles %}
+      <div class="post-preview">
+        <a href="{{ article.get_absolute_url }}">
+          <h2 class="post-title">
+            {{ article.title }}
+            {% if article.is_special %}
+            <span class="badge badge-danger" style="font-size: 14px;">Special*</span>
+            {% endif %}
+          </h2>
+          <h3 class="post-subtitle">
+            {{ article.description|truncatewords:27 }}
+          </h3>
+        </a>
+        <p class="post-meta">
+          {{ article.publish }}</p><br>
+        <p class="post-meta">
+          written by: <a href="{% url 'core:author' article.author.username %}">{{ article.author.username }}</a></p>
+      </div>
+      <hr>
+      {% endfor %}
+      <hr>
+      <!-- Pager -->
+      <div class="clearfix">
+        <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="container">
-    <nav aria-label="...">
-      <ul class="pagination">
-        {% if articles.has_previous %}
-        <div class="page-item">
-          <a class="page-link" href="?page={{ articles.previous_page_number }}">previous</a>
-        </div>
-    {% endif %}
-    {% if articles.has_previous %}
-        <div class="page-item">
-          <a class="page-link" href="?page={{ articles.previous_page_number }}">{{ articles.previous_page_number }}</a>
-        </div>
-    {% endif %}
-        <li class="page-item"><a class="page-link" href="?page={{ articles.number }}">{{ articles.number }}</a></li>
-        {% if articles.has_next %}
-            <div class="page-item">
-              <a class="page-link" href="?page={{ articles.next_page_number }}">{{ articles.next_page_number }}</a>
-            </div>
-        {% endif %}
-        {% if articles.has_next %}
-            <div class="page-item">
-              <a class="page-link" href="?page={{ articles.next_page_number }}">next</a>
-            </div>
-        {% endif %}
-      </ul>
-    </nav>
-  </div>
+<div class="container">
+  <nav aria-label="...">
+    <ul class="pagination">
+      {% if articles.has_previous %}
+      <div class="page-item">
+        <a class="page-link" href="?page={{ articles.previous_page_number }}">previous</a>
+      </div>
+      {% endif %}
+      {% if articles.has_previous %}
+      <div class="page-item">
+        <a class="page-link" href="?page={{ articles.previous_page_number }}">{{ articles.previous_page_number }}</a>
+      </div>
+      {% endif %}
+      <li class="page-item"><a class="page-link" href="?page={{ articles.number }}">{{ articles.number }}</a></li>
+      {% if articles.has_next %}
+      <div class="page-item">
+        <a class="page-link" href="?page={{ articles.next_page_number }}">{{ articles.next_page_number }}</a>
+      </div>
+      {% endif %}
+      {% if articles.has_next %}
+      <div class="page-item">
+        <a class="page-link" href="?page={{ articles.next_page_number }}">next</a>
+      </div>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
 {% endblock %}
