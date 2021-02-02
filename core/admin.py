@@ -30,3 +30,4 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Article, ArticeAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(IPAddress)

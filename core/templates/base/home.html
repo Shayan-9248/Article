@@ -62,7 +62,9 @@
           </h3>
         </a>
         <p class="post-meta">
-          {{ article.publish }}</p><br>
+          {{ article.publish }}</p>
+          <p class="post-meta">
+            visit count: {{ article.visit_count.count }}</p>
         <p class="post-meta">
           written by: <a href="{% url 'core:author' article.author.username %}">{{ article.author.username }}</a></p>
       </div>

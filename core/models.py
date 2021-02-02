@@ -9,6 +9,13 @@ from django.urls import reverse
 from account.models import *
 
 
+class IPAddress(models.Model):
+    ip_address = models.GenericIPAddressField()
+
+    def __str__(self):
+        return self.ip_address
+
+
 class Category(models.Model):
     sub_category = models.ForeignKey('self', on_delete=models.CASCADE, related_name='s_category', null=True, blank=True)
     is_sub = models.BooleanField(default=False)
@@ -41,6 +48,7 @@ class Article(models.Model):
     status = models.CharField(max_length=177, choices=STATUC_CHOICES)
     category = models.ManyToManyField(Category, blank=True)
     comments = GenericRelation(Comment)
+    visit_count = models.ManyToManyField(IPAddress, blank=True, related_name='visit_count')
 
     def __str__(self):
         return self.title

@@ -30,6 +30,10 @@ class ArticleDetail(View):
 
     def get(self, request, slug, id):
         article = get_object_or_404(Article, slug=slug, id=id)
+        ip_address = self.request.user.ip_address
+        if ip_address not in article.visit_count.all():
+            article.visit_count.add(ip_address)
+            
         return render(request, self.template_name, {'article': article})
 
 
