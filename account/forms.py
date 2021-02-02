@@ -77,20 +77,6 @@ class ProfileForm(forms.ModelForm):
         fields = ('username', 'email', 'is_author', 'special_user')
 
 
-# class SignupForm(forms.Form):
-    # username = forms.CharField(error_messages=message, widget=forms.TextInput(attrs={
-    #     'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Username'
-    # }))
-    # email = forms.EmailField(error_messages=message, widget=forms.TextInput(attrs={
-    #     'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Email'
-    # }))
-    # password1 = forms.CharField(error_messages={'required': 'this field is required'}, widget=forms.PasswordInput(attrs={
-    #     'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Password'
-    # }))
-    # password2 = forms.CharField(error_messages={'required': 'this field is required'}, widget=forms.PasswordInput(attrs={
-    #     'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Confirm Password'
-    # }))
-
 class SignupForm(UserCreationForm):
     username = forms.CharField(error_messages=message, widget=forms.TextInput(attrs={
         'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Username'
@@ -104,6 +90,13 @@ class SignupForm(UserCreationForm):
     password2 = forms.CharField(error_messages={'required': 'this field is required'}, widget=forms.PasswordInput(attrs={
         'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'Confirm Password'
     }))
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        qs = User.objects.filter(username=username)
+        if qs.exists():
+            raise forms.ValidationError('This Username is already exists')
+        return username
 
     def clean_email(self):
         email = self.cleaned_data['email']
@@ -123,11 +116,5 @@ class SignupForm(UserCreationForm):
         model = User
         fields = ('username', 'email')
 
-    # def clean_username(self):
-    #     username = self.cleaned_data['username']
-    #     qs = User.objects.filter(username=username)
-    #     if qs.exists():
-    #         raise forms.ValidationError('This Username is already exists')
-    #     return username
 
     
