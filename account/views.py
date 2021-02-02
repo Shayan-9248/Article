@@ -98,3 +98,21 @@ class DeleteArticle(LoginRequiredMixin, SuperUserMixin,  DeleteView):
     template_name = 'account/article_delete.html'
     model = Article
     success_url = reverse_lazy('account:account')
+
+
+class UserProfile(LoginRequiredMixin, UpdateView):
+    template_name = 'account/user_profile.html'
+    login_url = 'account:login'
+    model = User
+    success_url = reverse_lazy('account:profile')
+    form_class = ProfileForm
+
+    def get_object(self):
+        return User.objects.get(pk=self.request.user.pk)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            'user': self.request.user
+        })
+        return kwargs

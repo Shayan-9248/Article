@@ -39,3 +39,4 @@ class SuperUserMixin():
         if self.request.user.is_superuser:
             return super().dispatch(request, *args, **kwargs)
         raise Http404('You can not access this page')
+

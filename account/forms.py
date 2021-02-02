@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from datetime import timezone
 
 
 message = {
@@ -47,9 +48,6 @@ class UserChangeForm(forms.ModelForm):
         fields = ('email', 'username')
 
     def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here, rather than on the field, because the
-        # field does not have access to the initial value
         return self.initial["password"]
 
 
@@ -61,3 +59,18 @@ class LoginForm(forms.Form):
         'class': 'form-control', 'style': 'width: 30% !important', 'placeholder': 'password'
     }))
     remember = forms.CharField(label='remember me', required=False, widget=forms.CheckboxInput)
+
+
+class ProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+
+        super().__init__(*args, **kwargs)
+        
+        if not user.is_superuser:
+            self.fields['is_author'].disabled = True
+            self.fields['special_user'].disabled = True
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'is_author', 'special_user')

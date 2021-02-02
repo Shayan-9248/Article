@@ -1,0 +1,28 @@
+{% extends 'account/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title-meta %} {{ user.username|capfirst }} Profile {% endblock %}
+
+{% block title %} {{ user.username|capfirst }} Profile {% endblock %}
+
+{% block main %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col-6">
+              {{ form.username|as_crispy_field }}
+            </div>
+            <div class="col-6">
+                {{ form.email|as_crispy_field }}
+            </div>
+            <div class="col-6">
+                {{ form.special_user|as_crispy_field }}
+            </div>
+            <div class="col-12">
+                {{ form.is_author|as_crispy_field }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-outline-primary">Confirm</button>
+
+    </form>
+{% endblock %}
