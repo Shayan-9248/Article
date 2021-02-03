@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% load file_size %}
+
+{% block title %} Bucket {% endblock %}
+{% load static %}
+
+{% block content %}
+<header class="masthead" style="background-image: url('{% static 'blog/img/home-bg.jpg' %}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Django Blog</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Size</th>
+        <th scope="col">Download</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in objects %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ obj.Key }}</td>
+        <td>{{ obj.Size|convert }}</td>
+        <td><a href="{% url 'core:download' obj.Key %}"><i class="fas fa-save"></i></a></td>
+        <td><a href="{% url 'core:delete' obj.Key %}"><i class="fas fa-minus-circle"></i></a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

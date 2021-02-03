@@ -7,6 +7,7 @@ from django.views.generic import ListView
 from django.core.paginator import Paginator
 from datetime import timedelta, datetime
 from django.db.models import Count, Q
+from django.contrib import messages
 from urllib.parse import urlencode
 from account.models import User
 from django.views import View
@@ -14,6 +15,7 @@ from account.mixins import *
 from .filters import *
 from .models import *
 from .forms import *
+from . import tasks
 
 
 class ArticleList(View):
@@ -105,3 +107,33 @@ def add_favourite(request, id):
         fav = True
     return redirect(url)
         
+
+class BucketObjects(LoginRequiredMixin, View):
+    template_name = 'base/bucket.html'
+    login_url = 'account:login'
+
+    def get(self, request):
+        if not request.user.is_superuser:
+            return redirect('/')
+        objects = tasks.get_objects_list_tasks()
+        return render(request, self.template_name, {'objects': objects})
+
+
+class DownloadObject(LoginRequiredMixin, View):
+    login_url = 'account:login'
+
+    def get(self, request, key):
+        url = request.META.get('HTTP_REFERER')
+        tasks.download_object_tasks.delay(key)
+        messages.success(request, 'your demand will be response soon', 'success')
+        return redirect(url)
+        
+
+class DeleteObject(LoginRequiredMixin, View):
+    login_url = 'account:login'
+
+    def get(self, request, key):
+        url = request.META.get('HTTP_REFERER')
+        tasks.delete_object_tasks.delay(key)
+        messages.success(request, 'your demand will be response soon', 'success')
+        return redirect(url)

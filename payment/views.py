@@ -6,14 +6,14 @@ from datetime import timedelta, datetime
 
 MERCHANT = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
 client = Client('https://www.zarinpal.com/pg/services/WebGate/wsdl')
-amount = 1000  # Toman / Required
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"  # Required
 email = 'email@example.com'  # Optional
 mobile = '09123456789'  # Optional
 CallbackURL = 'http://localhost:8000/verify/' # Important: need to edit for realy server.
 
 def send_request(request):
-    result = client.service.PaymentRequest(MERCHANT, amount, description, email, mobile, CallbackURL)
+    amount = ''
+    result = client.service.PaymentRequest(MERCHANT, amount, description, request.user.email, mobile, CallbackURL)
     if result.Status == 100:
         return redirect('https://www.zarinpal.com/pg/StartPay/' + str(result.Authority))
     else:
