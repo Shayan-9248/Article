@@ -40,17 +40,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     # Local App
     'account.apps.AccountConfig',
     'core.apps.CoreConfig',
     'settings.apps.SettingsConfig',
+    'payment.apps.PaymentConfig',
 
     # Third Party App
     'crispy_forms',
     'django_celery_beat',
     'django_gravatar',
     'comment',
+    'django_filters',
 ]
 
 AUTH_USER_MODEL = 'account.User'

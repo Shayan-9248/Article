@@ -26,6 +26,7 @@
               <th>User</th>
               <th>Title</th>
               <th>Description</th>
+              <th>Visit Count</th>
               <th>Publish</th>
               <th>Created</th>
               <th>Updated</th>
@@ -46,6 +47,7 @@
                   {% endif %}
                 </td>
                 <td>{{ article.description|truncatewords:7 }}</td>
+                <td>{{ article.get_visit_count }}</td>
                 <td>{{ article.publish }}</td>
                 <td>{{ article.created }}</td>
                 <td>{{ article.updated }}</td>

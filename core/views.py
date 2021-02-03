@@ -1,28 +1,49 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models.functions import Greatest
 from django.views.generic import DetailView
 from django.views.generic import ListView
 from django.core.paginator import Paginator
+from datetime import timedelta, datetime
+from django.db.models import Count, Q
+from urllib.parse import urlencode
 from account.models import User
 from django.views import View
 from account.mixins import *
-from .tasks import *
+from .filters import *
 from .models import *
+from .forms import *
 
 
 class ArticleList(View):
     template_name = 'base/home.html'
 
     def get(self, request, slug=None):
-        articles = Article.objects.filter(status='p').order_by('-publish')
+        articles = Article.objects.published()
+        fltr = ProductFilter(request.GET, queryset=articles)
+        articles = fltr.qs
         paginator = Paginator(articles, 3)
         page_num = request.GET.get('page')
+        data = request.GET.copy()
+        if 'page' in data:
+            del data['page']
         page_obj = paginator.get_page(page_num)
         categories = Category.objects.filter(is_sub=False)
         if slug:
             category = get_object_or_404(Category, slug=slug)
             page_obj = articles.filter(category=category)
-        return render(request, self.template_name, {'articles': page_obj, 'categories': categories})
-
+        form = SearchForm()
+        if 'search' in request.GET:
+            form = SearchForm(request.GET)
+            if form.is_valid():
+                data = form.cleaned_data['search']
+                page_obj = articles.annotate(similarity=Greatest(
+                    TrigramSimilarity('title', data),
+                    TrigramSimilarity('description', data)
+                ),).filter(similarity__gt=0.3).order_by('-similarity')
+        context = {'articles': page_obj, 'categories': categories,
+                    'form': form, 'filter': fltr, 'data': urlencode(data)}
+        return render(request, self.template_name, context)
 
 
 class ArticleDetail(View):

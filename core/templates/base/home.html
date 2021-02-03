@@ -1,5 +1,6 @@
 {% extends 'base/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %} Home {% endblock %}
 
@@ -25,6 +26,14 @@
 </form>
 {% endcomment %}
 
+
+    <center>
+      <form>
+        {{ form }} <input type="submit" value="Search" class="btn btn-outline-danger">
+      </form>
+    </center><hr>
+  
+
 <center>
   {% for category in categories %}
   <div class="btn-group">
@@ -47,35 +56,43 @@
 <!-- Main Content -->
 <div class="container">
   <div class="row">
-    <div class="col-lg-8 col-md-10 mx-auto">
+    <div class="col-3">
+      <form>
+        <input name="visit_count" type="submit" value="most_visit" class="btn btn-outline-primary btn-sm">
+      </form><hr>
+      <form>
+        <label>
+          Model:
+        {{ filter.form.brand }}
+        </label><br>
+        <button type="submit" class="btn btn-outline-primary btn-sm">Filter</button>
+      </form>
+    </div>
+    <div class="col-9">
       {% for article in articles %}
-      <div class="post-preview">
-        <a href="{{ article.get_absolute_url }}">
-          <h2 class="post-title">
-            {{ article.title }}
-            {% if article.is_special %}
-            <span class="badge badge-danger" style="font-size: 14px;">Special*</span>
-            {% endif %}
-          </h2>
-          <h3 class="post-subtitle">
-            {{ article.description|truncatewords:27 }}
-          </h3>
-        </a>
-        <p class="post-meta">
-          {{ article.publish }}</p>
+        <div class="post-preview">
+          <a href="{{ article.get_absolute_url }}">
+            <h2 class="post-title">
+              {{ article.title }}
+              {% if article.is_special %}
+              <span class="badge badge-danger" style="font-size: 14px;">Special*</span>
+              {% endif %}
+            </h2>
+            <h3 class="post-subtitle">
+              {{ article.description|truncatewords:27 }}
+            </h3>
+          </a>
           <p class="post-meta">
-            visit count: {{ article.visit_count.count }}</p>
-        <p class="post-meta">
-          written by: <a href="{% url 'core:author' article.author.username %}">{{ article.author.username }}</a></p>
-      </div>
+            {{ article.publish|naturaltime }}</p>
+            <p class="post-meta">
+              visit count: {{ article.visit_count.count }}</p>
+          <p class="post-meta">
+            written by: <a href="{% url 'core:author' article.author.username %}">{{ article.author.username }}</a></p>
+        </div>
       <hr>
       {% endfor %}
-      <hr>
-      <!-- Pager -->
-      <div class="clearfix">
-        <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
-      </div>
     </div>
+      <hr>
   </div>
 </div>
 
@@ -84,23 +101,23 @@
     <ul class="pagination">
       {% if articles.has_previous %}
       <div class="page-item">
-        <a class="page-link" href="?page={{ articles.previous_page_number }}">previous</a>
+        <a class="page-link" href="?page={{ articles.previous_page_number }}&{{data}}">previous</a>
       </div>
       {% endif %}
       {% if articles.has_previous %}
       <div class="page-item">
-        <a class="page-link" href="?page={{ articles.previous_page_number }}">{{ articles.previous_page_number }}</a>
+        <a class="page-link" href="?page={{ articles.previous_page_number }}&{{data}}">{{ articles.previous_page_number }}</a>
       </div>
       {% endif %}
-      <li class="page-item"><a class="page-link" href="?page={{ articles.number }}">{{ articles.number }}</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ articles.number }}&{{data}}">{{ articles.number }}</a></li>
       {% if articles.has_next %}
       <div class="page-item">
-        <a class="page-link" href="?page={{ articles.next_page_number }}">{{ articles.next_page_number }}</a>
+        <a class="page-link" href="?page={{ articles.next_page_number }}&{{data}}">{{ articles.next_page_number }}</a>
       </div>
       {% endif %}
       {% if articles.has_next %}
       <div class="page-item">
-        <a class="page-link" href="?page={{ articles.next_page_number }}">next</a>
+        <a class="page-link" href="?page={{ articles.next_page_number }}&{{data}}">next</a>
       </div>
       {% endif %}
     </ul>

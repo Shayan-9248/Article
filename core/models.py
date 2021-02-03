@@ -1,12 +1,17 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models.signals import pre_save
-from .utils import unique_slug_generator
-from django.utils.html import format_html
 from django.contrib.contenttypes.fields import GenericRelation
+from django.db.models.signals import pre_save
+from django.utils.html import format_html
+from .utils import unique_slug_generator
 from comment.models import Comment
 from django.urls import reverse
 from account.models import *
+
+
+class ArticleManager(models.Manager):
+    def published(self):
+        return Article.objects.filter(status='p')
 
 
 class IPAddress(models.Model):
@@ -48,7 +53,10 @@ class Article(models.Model):
     status = models.CharField(max_length=177, choices=STATUC_CHOICES)
     category = models.ManyToManyField(Category, blank=True)
     comments = GenericRelation(Comment)
-    visit_count = models.ManyToManyField(IPAddress, blank=True, related_name='visit_count')
+    visit_count = models.ManyToManyField(IPAddress, through='ArticleVisit', blank=True, related_name='visit_count')
+    brand = models.ForeignKey('Brand', on_delete=models.CASCADE, null=True, blank=True)
+
+    objects = ArticleManager()
 
     def __str__(self):
         return self.title
@@ -66,6 +74,9 @@ class Article(models.Model):
         is_special_article.boolean = True
         return True
 
+    def get_visit_count(self):
+        return self.visit_count.count()
+
 
 def slug_blog_save(sender, instance, *args, **kwargs):
     if not instance.slug:
@@ -75,3 +86,17 @@ pre_save.connect(slug_blog_save, sender=Article)
 
 
 
+class ArticleVisit(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    ip_address = models.ForeignKey(IPAddress, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.article.title
+
+
+class Brand(models.Model):
+    title = models.CharField(max_length=177)
+
+    def __str__(self):
+        return self.title
