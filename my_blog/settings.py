@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django_gravatar',
     'comment',
     'django_filters',
+    'rest_framework',
 ]
 
 AUTH_USER_MODEL = 'account.User'
