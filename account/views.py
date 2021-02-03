@@ -205,3 +205,4 @@ def activate(request, uidb64, token):
 # class DonePassword(auth_views.PasswordResetDoneView):
 #     pass
     
+

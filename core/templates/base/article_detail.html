@@ -25,6 +25,13 @@
 <article>
   <div class="container">
     <div class="row">
+      <strong>
+        {% if fav %}
+            <a href="{% url 'core:add' article.id %}"><i class="far fa-heart">remove from favourite</i></a>
+        {% else %}
+            <a href="{% url 'core:add' article.id %}"><i class="fas fa-heart">add to favourite</i></a>
+        {% endif %}
+      </strong>
       <div class="col-lg-8 col-md-10 mx-auto">
         {% if article.is_special %}
         {% if user.is_authenticated and user.is_special_user or user == article.author or user.is_superuser %}

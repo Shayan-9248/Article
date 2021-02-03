@@ -55,6 +55,7 @@ class Article(models.Model):
     comments = GenericRelation(Comment)
     visit_count = models.ManyToManyField(IPAddress, through='ArticleVisit', blank=True, related_name='visit_count')
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, null=True, blank=True)
+    favourite = models.ManyToManyField(User, blank=True)
 
     objects = ArticleManager()
 

@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.postgres.search import TrigramSimilarity
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import Greatest
 from django.views.generic import DetailView
 from django.views.generic import ListView
@@ -51,11 +52,14 @@ class ArticleDetail(View):
 
     def get(self, request, slug, id):
         article = get_object_or_404(Article, slug=slug, id=id)
+        fav = False
+        if article.favourite.filter(id=request.user.id).exists():
+            fav = True
         ip_address = self.request.user.ip_address
         if ip_address not in article.visit_count.all():
             article.visit_count.add(ip_address)
             
-        return render(request, self.template_name, {'article': article})
+        return render(request, self.template_name, {'article': article, 'fav': fav})
 
 
 class ArticlePreview(AuthorAccessMixin, DetailView):
@@ -78,4 +82,26 @@ class AuthorList(View):
         return render(request, self.template_name, {'author': author, 'articles': page_obj})
 
     
-    
+class FavouriteList(LoginRequiredMixin, View):
+    template_name = 'base/favourite_list.html'
+    login_url = 'account:login'
+
+    def get(self, request):
+        articles = Article.objects.filter(favourite=True)
+        return render(request, self.template_name, {'articles': articles})
+
+
+
+
+def add_favourite(request, id):
+    url = request.META.get('HTTP_REFERER')
+    article = get_object_or_404(Article, id=id)
+    fav = False
+    if article.favourite.filter(id=request.user.id).exists():
+        article.favourite.remove(request.user)
+        fav = False
+    else:
+        article.favourite.add(request.user)
+        fav = True
+    return redirect(url)
+        

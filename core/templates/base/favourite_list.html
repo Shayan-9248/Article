@@ -1,0 +1,114 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<header class="masthead" style="background-image: url('{% static 'blog/img/home-bg.jpg' %}')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="site-heading">
+          <h1>Django Blog</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+{% comment %}
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-outline-primary">sum</button>
+</form>
+{% endcomment %}
+
+
+    <center>
+      <form>
+        {{ form }} <input type="submit" value="Search" class="btn btn-outline-danger">
+      </form>
+    </center><hr>
+  
+
+<center>
+  {% for category in categories %}
+  <div class="btn-group">
+    <a href="{{ category.get_absolute_url }}" class="btn btn-primary">{{ category.title }}</a>
+    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+
+    <div class="dropdown-menu">
+      {% for sub in category.s_category.all %}
+      <a class="dropdown-item" href="{{ sub.get_absolute_url }}">{{ sub.title }}</a>
+      {% endfor %}
+    </div>
+
+  </div>
+  {% endfor %}
+</center>
+
+<!-- Main Content -->
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      {% for article in articles %}
+        <div class="post-preview">
+          <a href="{{ article.get_absolute_url }}">
+            <h2 class="post-title">
+              {{ article.title }}
+              {% if article.is_special %}
+              <span class="badge badge-danger" style="font-size: 14px;">Special*</span>
+              {% endif %}
+            </h2>
+            <h3 class="post-subtitle">
+              {{ article.description|truncatewords:27 }}
+            </h3>
+          </a>
+          <p class="post-meta">
+            {{ article.publish|naturaltime }}</p>
+            <p class="post-meta">
+              visit count: {{ article.visit_count.count }}</p>
+          <p class="post-meta">
+            written by: <a href="{% url 'core:author' article.author.username %}">{{ article.author.username }}</a></p>
+        </div>
+      <hr>
+      {% endfor %}
+    </div>
+      <hr>
+  </div>
+</div>
+
+<div class="container">
+  <nav aria-label="...">
+    <ul class="pagination">
+      {% if articles.has_previous %}
+      <div class="page-item">
+        <a class="page-link" href="?page={{ articles.previous_page_number }}&{{data}}">previous</a>
+      </div>
+      {% endif %}
+      {% if articles.has_previous %}
+      <div class="page-item">
+        <a class="page-link" href="?page={{ articles.previous_page_number }}&{{data}}">{{ articles.previous_page_number }}</a>
+      </div>
+      {% endif %}
+      <li class="page-item"><a class="page-link" href="?page={{ articles.number }}&{{data}}">{{ articles.number }}</a></li>
+      {% if articles.has_next %}
+      <div class="page-item">
+        <a class="page-link" href="?page={{ articles.next_page_number }}&{{data}}">{{ articles.next_page_number }}</a>
+      </div>
+      {% endif %}
+      {% if articles.has_next %}
+      <div class="page-item">
+        <a class="page-link" href="?page={{ articles.next_page_number }}&{{data}}">next</a>
+      </div>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endblock %}
