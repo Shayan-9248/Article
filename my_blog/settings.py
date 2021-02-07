@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
 
     # Local App
     'account.apps.AccountConfig',
@@ -102,7 +103,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': 'RedBull2003',
         'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'PORT': '5432'
     }
 }
 
@@ -145,7 +146,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# STATIC_ROOT = os.path.join(BASE_DIR / 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR / "static_root")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR / "static")

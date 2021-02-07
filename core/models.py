@@ -7,6 +7,7 @@ from .utils import unique_slug_generator
 from comment.models import Comment
 from django.urls import reverse
 from account.models import *
+from django.conf import settings
 
 
 class ArticleManager(models.Manager):

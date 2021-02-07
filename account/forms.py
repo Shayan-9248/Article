@@ -112,7 +112,7 @@ class SignupForm(UserCreationForm):
             raise forms.ValidationError('Passwords must be match!')
         return password2
 
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = User
         fields = ('username', 'email')
 
