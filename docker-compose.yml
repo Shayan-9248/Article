@@ -1,0 +1,63 @@
+version: "3.8"
+
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    networks:
+      - main
+    ports:
+      - "5672:5672"
+    restart: on-failure
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=selenium
+      - POSTGRES_USER=postgtres
+      - POSGTRES_PASSWORD=RedBull2003
+    networks:
+      - main
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: on-failure
+
+  celery_worker:
+    container_name: celery_worker
+    command: "celery -A my_blog worker -l info"
+    depends_on:
+      - rabbitmq
+      - postgres
+      - app
+    image: app
+    environment:
+      - C_FORCE_ROOT="true"
+    networks:
+      - main
+    restart: on-failure
+
+  app:
+    build: .
+    command: sh -c "python manage.py migrate && runserver 0.0.0.0:8000"
+    container_name: app
+    volumes:
+      - .:/src
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8000:8000"
+    networks:
+      - main
+    restart: on-failure
+
+
+networks:
+  main:
+
+volumes:
+  postgres_data:
